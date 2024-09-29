@@ -84,10 +84,3 @@ export const FF_FIXTURE_BASE_PATH =
   'plugins/dashboards-flow-framework/';
 
 export const TEST_WORKFLOW_ID = '123456789';
-
-// export const DETECTOR_STATE = {
-//   DISABLED: 'Stopped',
-//   INIT: 'Initializing',
-//   RUNNING: 'Running',
-//   FEATURE_REQUIRED: 'Feature required',
-// };
