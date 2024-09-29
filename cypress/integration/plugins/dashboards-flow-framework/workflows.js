@@ -8,12 +8,16 @@ import {
   } from '../../../utils/constants';
 
   
-  describe('Workflow list page', () => {
-    before(() => {});
-
+  describe('NeW Workflow page', () => {
+    beforeEach(() => {
+      cy.visit(FF_URL.WORKFLOWS_NEW);
+    });
+  
+    it('should display the search bar', () => {
+      cy.get('input[placeholder="Search"]').should('be.visible');
+    });
+  
     it('Redirect to create workflow', () => {
-
-        cy.visit(FF_URL.WORKFLOWS_NEW);
         cy.getElementByTestId('goButton').should('Go');
         cy.getElementByTestId('goButton').click();
    });
