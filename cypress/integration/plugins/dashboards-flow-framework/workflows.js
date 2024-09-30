@@ -17,7 +17,7 @@ import {
       cy.get('input[placeholder="Search"]').should('be.visible');
     });
   
-    it('Redirect to create workflow', () => {
+    it('create workflow', () => {
         cy.getElementByTestId('goButton').should('Go');
         cy.getElementByTestId('goButton').click();
    });
