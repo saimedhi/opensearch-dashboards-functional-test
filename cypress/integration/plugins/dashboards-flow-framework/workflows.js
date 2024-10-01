@@ -16,9 +16,10 @@ import {
     it('should display the search bar', () => {
       cy.get('input[placeholder="Search"]').should('be.visible');
     });
+
+    it('create workflow using import', () => {
+        cy.getElementByTestId('importWorkflowButton').should('Import workflow');
+        cy.getElementByTestId('importWorkflowButton').click();
+      });
   
-    it('create workflow', () => {
-        cy.getElementByTestId('goButton').should('Go');
-        cy.getElementByTestId('goButton').click();
-   });
   })
