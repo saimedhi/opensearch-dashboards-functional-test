@@ -18,8 +18,8 @@ import {
     });
 
     it('create workflow using import', () => {
-        cy.getElementByTestId('importWorkflowButton').should('Import workflow');
-        cy.getElementByTestId('importWorkflowButton').click();
+        cy.getElementByTestId('importWorkflowButton').should('be.visible').click();
+        cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
       });
   
   })
