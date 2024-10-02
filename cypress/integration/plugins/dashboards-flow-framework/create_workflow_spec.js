@@ -23,7 +23,7 @@ import {
         cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
         const filePath = FF_FIXTURE_BASE_PATH + 'sample-workflow.json';
         cy.get('input[type=file]').selectFile(filePath)
-        cy.get('button:contains("Import")').should('not.be.disabled').click();
+        cy.getElementByTestId('importJSONButton').should('be.visible').click();
       });
 
       it('create workflow using template', () => {
