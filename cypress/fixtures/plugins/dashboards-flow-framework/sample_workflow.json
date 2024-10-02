@@ -1,6 +1,265 @@
 {
-    "name": "Test Workflow",
-    "version": 1,
-    "steps": []
+    "name": "test_import_workflow",
+    "use_case": "",
+    "description": "A basic workflow containing the ingest pipeline, search pipeline, and index configurations for performing hybrid search",
+    "version": {
+      "template": "1.0.0",
+      "compatibility": [
+        "2.17.0",
+        "3.0.0"
+      ]
+    },
+    "workflows": {},
+    "ui_metadata": {
+      "config": {
+        "search": {
+          "pipelineName": {
+            "id": "pipelineName",
+            "type": "string",
+            "value": "search_pipeline_6968d2db467ea2c7"
+          },
+          "request": {
+            "id": "request",
+            "type": "json",
+            "value": "{\n  \"query\": {\n    \"term\": {\n      \"my_text\": {\n        \"value\": \"{{query_text}}\"\n      }\n    }\n  }\n}"
+          },
+          "index": {
+            "name": {
+              "id": "indexName",
+              "type": "string"
+            }
+          },
+          "enrichRequest": {
+            "processors": [
+              {
+                "name": "ML Inference Processor",
+                "id": "ml_processor_search_request_4ae503a58b6242c7",
+                "fields": [
+                  {
+                    "id": "model",
+                    "type": "model",
+                    "value": {
+                      "id": "dfMPE5EB8_-RPNi-S0gD"
+                    }
+                  },
+                  {
+                    "id": "input_map",
+                    "type": "mapArray",
+                    "value": [
+                      [
+                        {
+                          "value": "query.term.my_text.value",
+                          "key": ""
+                        }
+                      ]
+                    ]
+                  },
+                  {
+                    "id": "output_map",
+                    "type": "mapArray",
+                    "value": [
+                      [
+                        {
+                          "value": "",
+                          "key": "vector"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                "type": "ml_inference",
+                "optionalFields": [
+                  {
+                    "id": "query_template",
+                    "type": "jsonString",
+                    "value": "{\n  \"_source\": {\n    \"excludes\": [\n      \"my_embedding\"\n    ]\n  },\n  \"query\": {\n    \"hybrid\": {\n      \"queries\": [\n        {\n          \"match\": {\n            \"my_text\": {\n              \"query\": \"{{query_text}}\"\n            }\n          }\n        },\n        {\n          \"knn\": {\n            \"my_embedding\": {\n              \"vector\": ${vector},\n              \"k\": 10\n            }\n          }\n        }\n      ]\n    }\n  }\n}"
+                  },
+                  {
+                    "id": "model_config",
+                    "type": "json"
+                  },
+                  {
+                    "id": "full_response_path",
+                    "type": "boolean",
+                    "value": false
+                  },
+                  {
+                    "id": "ignore_missing",
+                    "type": "boolean",
+                    "value": false
+                  },
+                  {
+                    "id": "ignore_failure",
+                    "type": "boolean",
+                    "value": false
+                  },
+                  {
+                    "id": "max_prediction_tasks",
+                    "type": "number",
+                    "value": 10
+                  },
+                  {
+                    "id": "tag",
+                    "type": "string"
+                  },
+                  {
+                    "id": "description",
+                    "type": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          "enrichResponse": {
+            "processors": [
+              {
+                "name": "Normalization Processor",
+                "id": "normalization_processor_71990cceefed8ae7",
+                "fields": [],
+                "type": "normalization-processor",
+                "optionalFields": [
+                  {
+                    "id": "weights",
+                    "type": "string",
+                    "value": "0.5, 0.5"
+                  },
+                  {
+                    "selectOptions": [
+                      "min_max",
+                      "l2"
+                    ],
+                    "id": "normalization_technique",
+                    "type": "select"
+                  },
+                  {
+                    "selectOptions": [
+                      "arithmetic_mean",
+                      "geometric_mean",
+                      "harmonic_mean"
+                    ],
+                    "id": "combination_technique",
+                    "type": "select"
+                  },
+                  {
+                    "id": "description",
+                    "type": "string"
+                  },
+                  {
+                    "id": "tag",
+                    "type": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "ingest": {
+          "pipelineName": {
+            "id": "pipelineName",
+            "type": "string",
+            "value": "ingest_pipeline_2f6edbbcf220781a"
+          },
+          "enrich": {
+            "processors": [
+              {
+                "name": "ML Inference Processor",
+                "id": "ml_processor_ingest_05503002a4610b2e",
+                "fields": [
+                  {
+                    "id": "model",
+                    "type": "model",
+                    "value": {
+                      "id": "dfMPE5EB8_-RPNi-S0gD"
+                    }
+                  },
+                  {
+                    "id": "input_map",
+                    "type": "mapArray",
+                    "value": [
+                      [
+                        {
+                          "value": "my_text",
+                          "key": ""
+                        }
+                      ]
+                    ]
+                  },
+                  {
+                    "id": "output_map",
+                    "type": "mapArray",
+                    "value": [
+                      [
+                        {
+                          "value": "",
+                          "key": "my_embedding"
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                "type": "ml_inference",
+                "optionalFields": [
+                  {
+                    "id": "model_config",
+                    "type": "json"
+                  },
+                  {
+                    "id": "full_response_path",
+                    "type": "boolean",
+                    "value": false
+                  },
+                  {
+                    "id": "ignore_missing",
+                    "type": "boolean",
+                    "value": false
+                  },
+                  {
+                    "id": "ignore_failure",
+                    "type": "boolean",
+                    "value": false
+                  },
+                  {
+                    "id": "max_prediction_tasks",
+                    "type": "number",
+                    "value": 10
+                  },
+                  {
+                    "id": "tag",
+                    "type": "string"
+                  },
+                  {
+                    "id": "description",
+                    "type": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          "index": {
+            "settings": {
+              "id": "indexSettings",
+              "type": "json",
+              "value": "{\n  \"index.knn\": true\n}"
+            },
+            "mappings": {
+              "id": "indexMappings",
+              "type": "json",
+              "value": "{\n  \"properties\": {\n    \"my_text\": {\n      \"type\": \"text\"\n    },\n    \"my_embedding\": {\n      \"type\": \"knn_vector\",\n      \"dimension\": 1536\n    }\n  }\n}"
+            },
+            "name": {
+              "id": "indexName",
+              "type": "string",
+              "value": "knn_index_18cfce"
+            }
+          },
+          "enabled": {
+            "id": "enabled",
+            "type": "boolean",
+            "value": true
+          }
+        }
+      },
+      "type": "Hybrid search"
+    }
   }
   

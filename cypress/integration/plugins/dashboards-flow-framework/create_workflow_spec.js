@@ -9,7 +9,7 @@ import {
   } from '../../../utils/constants';
 
   
-  describe('NeW Workflow page', () => {
+  describe('Create Workflow', () => {
     beforeEach(() => {
       cy.visit(FF_URL.WORKFLOWS_NEW);
     });
@@ -21,8 +21,8 @@ import {
     it('create workflow using import', () => {
         cy.getElementByTestId('importWorkflowButton').should('be.visible').click();
         cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
-        const fileName =  FF_FIXTURE_BASE_PATH + 'sample-workflow.json';
-        cy.get('input[type="file"]').attachFile(fileName);
+        const filePath = FF_FIXTURE_BASE_PATH + 'sample-workflow.json';
+        cy.get('input[type=file]').selectFile(filePath)
         cy.get('button:contains("Import")').should('not.be.disabled').click();
       });
 
