@@ -1,0 +1,38 @@
+{
+  "id": "create_connector_1",
+  "type": "create_connector",
+  "previous_node_inputs": {},
+  "user_inputs": {
+    "version": "1",
+    "name": "Claude instant runtime Connector",
+    "protocol": "aws_sigv4",
+    "description": "The connector to BedRock service for claude model",
+    "actions": [
+      {
+        "headers": {
+          "x-amz-content-sha256": "required",
+          "content-type": "application/json"
+        },
+        "method": "GET",
+        "request_body": "{\"prompt\":\"${parameters.prompt}\", \"max_tokens_to_sample\":${parameters.max_tokens_to_sample}, \"temperature\":${parameters.temperature},  \"anthropic_version\":\"${parameters.anthropic_version}\" }",
+        "action_type": "predict",
+        "url": "http://127.0.0.1:3000"
+      }
+    ],
+    "credential": {
+      "access_key": "<key>",
+      "secret_key": "<value>"
+    },
+    "parameters": {
+      "endpoint": "bedrock-runtime.us-west-2.amazonaws.com",
+      "content_type": "application/json",
+      "auth": "Sig_V4",
+      "max_tokens_to_sample": "8000",
+      "service_name": "bedrock",
+      "temperature": "0.0001",
+      "response_filter": "$.completion",
+      "region": "us-west-2",
+      "anthropic_version": "bedrock-2023-05-31"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "register_model_2",
+  "type": "register_remote_model",
+  "previous_node_inputs": {
+    "create_connector_1": "connector_id"
+  },
+  "user_inputs": {
+    "description": "test model",
+    "deploy": true,
+    "name": "claude-instant"
+  }
+}
