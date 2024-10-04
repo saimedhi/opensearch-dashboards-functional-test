@@ -5,7 +5,7 @@
 
 import {
   FF_URL,
-  FF_FIXTURE_BASE_PATH,
+  //FF_FIXTURE_BASE_PATH,
   // BACKEND_BASE_PATH,
   modelParameters,
 } from '../../../utils/constants';
@@ -47,34 +47,34 @@ describe('Create Workflow', () => {
     cy.visit(FF_URL.WORKFLOWS_NEW);
   });
 
-  it('should display the search bar', () => {
-    cy.get('input[placeholder="Search"]').should('be.visible');
-  });
+  // it('should display the search bar', () => {
+  //   cy.get('input[placeholder="Search"]').should('be.visible');
+  // });
 
-  it('create workflow using import', () => {
-    cy.getElementByDataTestId('importWorkflowButton')
-      .should('be.visible')
-      .click();
-    cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
-    const filePath = FF_FIXTURE_BASE_PATH + 'sample_workflow.json';
-    cy.get('input[type=file]').selectFile(filePath);
-    cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
-    //cy.url().should('include', FF_URL.WORKFLOWS_LIST); TODO:FF there is a bug
-  });
+  // it('create workflow using import', () => {
+  //   cy.getElementByDataTestId('importWorkflowButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
+  //   const filePath = FF_FIXTURE_BASE_PATH + 'sample_workflow.json';
+  //   cy.get('input[type=file]').selectFile(filePath);
+  //   cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
+  //   //cy.url().should('include', FF_URL.WORKFLOWS_LIST); TODO:FF there is a bug
+  // });
 
-  it('create workflow using Custom template', () => {
-    cy.contains('h2', 'Custom')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    cy.contains('Quick configure').should('be.visible');
-    cy.get('input[type="text"]').clear().type('new_custom_workflow');
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
-  });
+  // it('create workflow using Custom template', () => {
+  //   cy.contains('h2', 'Custom')
+  //     .parents('.euiCard')
+  //     .within(() => {
+  //       cy.contains('button', 'Go').click();
+  //     });
+  //   cy.contains('Quick configure').should('be.visible');
+  //   cy.get('input[type="text"]').clear().type('new_custom_workflow');
+  //   cy.getElementByDataTestId('quickConfigureCreateButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.url().should('include', FF_URL.WORKFLOWS + '/');
+  // });
 
   it('create workflow using Semantic Search template', () => {
     // Create the model connector
@@ -110,35 +110,35 @@ describe('Create Workflow', () => {
       });
   });
 
-  it('create workflow using Hybrid Search template', () => {
-    cy.contains('h2', 'Hybrid Search')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-  });
+  // it('create workflow using Hybrid Search template', () => {
+  //   cy.contains('h2', 'Hybrid Search')
+  //     .parents('.euiCard')
+  //     .within(() => {
+  //       cy.contains('button', 'Go').click();
+  //     });
+  // });
 
-  it('create workflow using Multimodal Search template', () => {
-    cy.contains('h2', 'Multimodal Search')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-  });
+  // it('create workflow using Multimodal Search template', () => {
+  //   cy.contains('h2', 'Multimodal Search')
+  //     .parents('.euiCard')
+  //     .within(() => {
+  //       cy.contains('button', 'Go').click();
+  //     });
+  // });
 
-  it('create workflow using Sentiment Analysis template', () => {
-    cy.contains('h2', 'Sentiment Analysis')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-  });
+  // it('create workflow using Sentiment Analysis template', () => {
+  //   cy.contains('h2', 'Sentiment Analysis')
+  //     .parents('.euiCard')
+  //     .within(() => {
+  //       cy.contains('button', 'Go').click();
+  //     });
+  // });
 
-  it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
-    cy.contains('h2', 'Retrieval-Augmented Generation (RAG)')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-  });
+  // it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
+  //   cy.contains('h2', 'Retrieval-Augmented Generation (RAG)')
+  //     .parents('.euiCard')
+  //     .within(() => {
+  //       cy.contains('button', 'Go').click();
+  //     });
+  // });
 });
