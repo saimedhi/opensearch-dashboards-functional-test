@@ -9,8 +9,8 @@ import {
   // BACKEND_BASE_PATH,
   modelParameters,
 } from '../../../utils/constants';
-//import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
-import connector1 from '../../../fixtures/plugins/dashboards-flow-framework/connector1.json';
+import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
+//import connector1 from '../../../fixtures/plugins/dashboards-flow-framework/connector1.json';
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
 // import {
 //   getElementByDataTestId,
@@ -77,30 +77,30 @@ describe('Create Workflow', () => {
   // });
 
   it('create workflow using Semantic Search template', () => {
-    // Create the model connector
-    cy.createConnector(connector1)
-      .then((connectorResponse) => {
-        console.log('Connector Response:', connectorResponse);
+    // // Create the model connector
+    // cy.createConnector(createConnectorBody)
+    //   .then((connectorResponse) => {
+    //     console.log('Connector Response:', connectorResponse);
 
-        modelParameters.connectorId = connectorResponse.connector_id;
-        console.log('Connector ID:', modelParameters.connectorId);
+    //     modelParameters.connectorId = connectorResponse.connector_id;
+    //     console.log('Connector ID:', modelParameters.connectorId);
 
-        // Register the model and pass the connector ID with deploy=true
-        return cy.registerAndDeployModel({
-          body: {
-            ...registerModelBody,
-            connector_id: modelParameters.connectorId,
-            function_name: 'remote',
-          },
-          qs: { deploy: true }, // The model will be deployed during registration
-        });
-      })
-      .then((modelResponse) => {
-        console.log('Model Response:', modelResponse);
+    //     // Register the model and pass the connector ID with deploy=true
+    //     return cy.registerAndDeployModel({
+    //       body: {
+    //         ...registerModelBody,
+    //         connector_id: modelParameters.connectorId,
+    //         function_name: 'remote',
+    //       },
+    //       qs: { deploy: true }, // The model will be deployed during registration
+    //     });
+    //   })
+    //   .then((modelResponse) => {
+    //     console.log('Model Response:', modelResponse);
 
-        modelParameters.modelId = modelResponse.model_id;
-        console.log('Model ID:', modelParameters.modelId);
-      });
+    //     modelParameters.modelId = modelResponse.model_id;
+    //     console.log('Model ID:', modelParameters.modelId);
+    //   });
 
     cy.contains('h2', 'Semantic Search')
       .parents('.euiCard')

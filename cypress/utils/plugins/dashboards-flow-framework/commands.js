@@ -9,12 +9,17 @@ Cypress.Commands.add('getElementByDataTestId', (testId) => {
   return cy.get(`[data-testid="${testId}"]`);
 });
 
-Cypress.Commands.add('createConnector', (body) =>
+Cypress.Commands.add('createConnector', (connectorBody) =>
   cy
     .request({
       method: 'POST',
       url: APIS_MLC.CREATE_CONNECTOR_URL,
-      body,
+      body:{
+        ...connectorBody,
+        access_key: System.getenv("AWS_ACCESS_KEY_ID"),
+        secret_key:System.getenv("AWS_SECRET_ACCESS_KEY"),
+        session_token:System.getenv("AWS_SESSION_TOKEN"),
+      },
     })
     .then(({ body }) => body)
 );
