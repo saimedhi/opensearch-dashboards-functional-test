@@ -37,7 +37,7 @@ export const FF_URL = {
 //   FF_WORKFLOW_ROUTE_PREFIX_API_PATH + '/state/_search';
 
 export const ML_COMMONS_APIS_PREFIX = BACKEND_BASE_PATH + '/_plugins/_ml';
-const ML_MODELS_BASE_URL = `${ML_COMMONS_APIS_PREFIX}/models`;
+export const ML_MODELS_BASE_URL = `${ML_COMMONS_APIS_PREFIX}/models`;
 export const APIS_MLC = {
   CREATE_CONNECTOR_URL: `${ML_COMMONS_APIS_PREFIX}/connectors/_create`,
   REGISTER_MODEL_URL: `${ML_MODELS_BASE_URL}/_register`,

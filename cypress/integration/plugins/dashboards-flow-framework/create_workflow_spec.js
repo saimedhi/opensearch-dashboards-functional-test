@@ -6,7 +6,6 @@
 import {
   FF_URL,
   FF_FIXTURE_BASE_PATH,
-  BACKEND_BASE_PATH,
   modelParameters,
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
