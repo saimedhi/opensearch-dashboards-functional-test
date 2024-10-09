@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH } from '../../base_constants';
+import { BASE_PATH, BACKEND_BASE_PATH } from '../../base_constants';
 /**
  *****************************
  URL CONSTANTS
@@ -36,10 +36,11 @@ export const FF_URL = {
 // const FF_SEARCH_WORKFLOW_STATE_ROUTE_API_PATH =
 //   FF_WORKFLOW_ROUTE_PREFIX_API_PATH + '/state/_search';
 
-export const ML_COMMONS_APIS_PREFIX = '/_plugins/_ml';
+export const ML_COMMONS_APIS_PREFIX = BACKEND_BASE_PATH + '/_plugins/_ml';
+const ML_MODELS_BASE_URL = `${ML_COMMONS_APIS_PREFIX}/models`;
 export const APIS_MLC = {
   CREATE_CONNECTOR_URL: `${ML_COMMONS_APIS_PREFIX}/connectors/_create`,
-  REGISTER_MODEL_URL: `${ML_COMMONS_APIS_PREFIX}/models/_register`,
+  REGISTER_MODEL_URL: `${ML_MODELS_BASE_URL}/_register`,
 };
 
 // export function deployModelUrl(modelId) {

@@ -5,8 +5,8 @@
 
 import {
   FF_URL,
-  //FF_FIXTURE_BASE_PATH,
-  // BACKEND_BASE_PATH,
+  FF_FIXTURE_BASE_PATH,
+  BACKEND_BASE_PATH,
   modelParameters,
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
@@ -20,27 +20,29 @@ import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framewo
 
 describe('Create Workflow', () => {
   before(() => {
-    // // Create the model connector
-    // cy.createConnector(createConnectorBody)
-    //   .then((connectorResponse) => {
-    //     console.log('Connector Response:', connectorResponse);
-    //     modelParameters.connectorId = connectorResponse.connector_id;
-    //     console.log('Connector ID:', modelParameters.connectorId);
-    //     // Register the model and pass the connector ID with deploy=true
-    //     return cy.registerAndDeployModel({
-    //       body: {
-    //         ...registerModelBody,
-    //         connector_id: modelParameters.connectorId,
-    //         function_name: 'remote',
-    //       },
-    //       qs: { deploy: true }, // The model will be deployed during registration
-    //     });
-    //   })
-    //   .then((modelResponse) => {
-    //     console.log('Model Response:', modelResponse);
-    //     modelParameters.modelId = modelResponse.model_id;
-    //     console.log('Model ID:', modelParameters.modelId);
-    //   });
+    cy.createConnector(createConnectorBody)
+      .then((connectorResponse) => {
+        console.log('Connector Response:', connectorResponse);
+
+        modelParameters.connectorId = connectorResponse.connector_id;
+        console.log('Connector ID:', modelParameters.connectorId);
+
+        // Register the model and pass the connector ID with deploy=true
+        return cy.registerAndDeployModel({
+          body: {
+            ...registerModelBody,
+            connector_id: modelParameters.connectorId,
+            function_name: 'remote',
+          },
+          qs: { deploy: true }, // The model will be deployed during registration
+        });
+      })
+      .then((modelResponse) => {
+        console.log('Model Response:', modelResponse);
+
+        modelParameters.modelId = modelResponse.model_id;
+        console.log('Model ID:', modelParameters.modelId);
+      });
   });
 
   beforeEach(() => {
@@ -76,45 +78,23 @@ describe('Create Workflow', () => {
   //   cy.url().should('include', FF_URL.WORKFLOWS + '/');
   // });
 
-  it('create workflow using Semantic Search template', () => {
-    // // Create the model connector
-    // cy.createConnector(createConnectorBody)
-    //   .then((connectorResponse) => {
-    //     console.log('Connector Response:', connectorResponse);
-
-    //     modelParameters.connectorId = connectorResponse.connector_id;
-    //     console.log('Connector ID:', modelParameters.connectorId);
-
-    //     // Register the model and pass the connector ID with deploy=true
-    //     return cy.registerAndDeployModel({
-    //       body: {
-    //         ...registerModelBody,
-    //         connector_id: modelParameters.connectorId,
-    //         function_name: 'remote',
-    //       },
-    //       qs: { deploy: true }, // The model will be deployed during registration
-    //     });
-    //   })
-    //   .then((modelResponse) => {
-    //     console.log('Model Response:', modelResponse);
-
-    //     modelParameters.modelId = modelResponse.model_id;
-    //     console.log('Model ID:', modelParameters.modelId);
-    //   });
-
-    cy.contains('h2', 'Semantic Search')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-        //cy.contains('button', 'Optional configuration').click();
-      });
-  });
+  // it('create workflow using Semantic Search template', () => {
+  // cy.contains('h2', 'Semantic Search')
+  //   .parents('.euiCard')
+  //   .within(() => {
+  //     cy.contains('button', 'Go').click();
+  //     //cy.contains('button', 'Optional configuration').click();
+  //   });
+  // });
 
   // it('create workflow using Hybrid Search template', () => {
   //   cy.contains('h2', 'Hybrid Search')
   //     .parents('.euiCard')
   //     .within(() => {
   //       cy.contains('button', 'Go').click();
+  //       cy.getElementByDataTestId('optionalConfigurationButton')
+  //         .should('be.visible')
+  //         .click();
   //     });
   // });
 
@@ -126,13 +106,40 @@ describe('Create Workflow', () => {
   //     });
   // });
 
-  // it('create workflow using Sentiment Analysis template', () => {
-  //   cy.contains('h2', 'Sentiment Analysis')
-  //     .parents('.euiCard')
-  //     .within(() => {
-  //       cy.contains('button', 'Go').click();
-  //     });
-  // });
+  it('create workflow using Sentiment Analysis template', () => {
+    cy.contains('h2', 'Sentiment Analysis')
+      .parents('.euiCard')
+      .within(() => {
+        cy.contains('button', 'Go').click();
+      });
+    cy.getElementByDataTestId('optionalConfigurationButton')
+      .should('be.visible')
+      .click();
+    // TODO: Add ml model
+    cy.getElementByDataTestId('quickConfigureCreateButton')
+      .should('be.visible')
+      .click();
+    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.getElementByDataTestId('editSourceDataButton')
+      .should('be.visible')
+      .click();
+    cy.getElementByDataTestId('uploadSourceDataButton')
+      .should('be.visible')
+      .click();
+    const filePath =
+      FF_FIXTURE_BASE_PATH + 'sentiment_analysis_source_data.json';
+    cy.get('input[type=file]').selectFile(filePath);
+    cy.getElementByDataTestId('closeSourceDataButton')
+      .should('be.visible')
+      .click();
+    cy.getElementByDataTestId('runIngestionButton')
+      .should('be.visible')
+      .click();
+    cy.get('input#skip').click({ force: true });
+    cy.getElementByDataTestId('searchPipelineButton')
+      .should('be.visible')
+      .click();
+  });
 
   // it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
   //   cy.contains('h2', 'Retrieval-Augmented Generation (RAG)')
@@ -141,4 +148,12 @@ describe('Create Workflow', () => {
   //       cy.contains('button', 'Go').click();
   //     });
   // });
+  after(() => {
+    cy.undeployMLCommonsModel(modelParameters.modelId).then((Response) => {
+      console.log('Response:', Response);
+    });
+    cy.deleteMLCommonsModel(modelParameters.modelId).then((Response) => {
+      console.log('Response:', Response);
+    });
+  });
 });

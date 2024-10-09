@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { APIS_MLC } from '../../../utils/constants';
+import { APIS_MLC, ML_MODELS_BASE_URL } from '../../../utils/constants';
 
 Cypress.Commands.add('getElementByDataTestId', (testId) => {
   return cy.get(`[data-testid="${testId}"]`);
@@ -14,12 +14,7 @@ Cypress.Commands.add('createConnector', (connectorBody) =>
     .request({
       method: 'POST',
       url: APIS_MLC.CREATE_CONNECTOR_URL,
-      body:{
-        ...connectorBody,
-        access_key: System.getenv("AWS_ACCESS_KEY_ID"),
-        secret_key:System.getenv("AWS_SECRET_ACCESS_KEY"),
-        session_token:System.getenv("AWS_SESSION_TOKEN"),
-      },
+      body: connectorBody,
     })
     .then(({ body }) => body)
 );
@@ -35,11 +30,20 @@ Cypress.Commands.add('registerAndDeployModel', ({ body, qs }) =>
     .then(({ body }) => body)
 );
 
-// Cypress.Commands.add('deployMLCommonsModel', (modelId) =>
-//   cy
-//     .request({
-//       method: 'POST',
-//       url: `${APIS_MLC.MODEL_BASE}/${modelId}/_deploy`,
-//     })
-//     .then(({ body }) => body)
-// );
+Cypress.Commands.add('undeployMLCommonsModel', (modelId) =>
+  cy
+    .request({
+      method: 'POST',
+      url: ML_MODELS_BASE_URL + `/${modelId}` + `/_undeploy`,
+    })
+    .then(({ body }) => body)
+);
+
+Cypress.Commands.add('deleteMLCommonsModel', (modelId) =>
+  cy
+    .request({
+      method: 'DELETE',
+      url: ML_MODELS_BASE_URL + `/${modelId}`,
+    })
+    .then(({ body }) => body)
+);
