@@ -21,31 +21,72 @@ describe('Create Workflow', () => {
   before(() => {
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
-        console.log('Connector Response:', connectorResponse);
-
         modelParameters.connectorId = connectorResponse.connector_id;
-        console.log('Connector ID:', modelParameters.connectorId);
-
         // Register the model and pass the connector ID with deploy=true
-        return cy.registerAndDeployModel({
+        cy.registerAndDeployModel({
           body: {
             ...registerModelBody,
             connector_id: modelParameters.connectorId,
             function_name: 'remote',
           },
-          qs: { deploy: true }, // The model will be deployed during registration
+          qs: { deploy: true },
         });
       })
       .then((modelResponse) => {
-        console.log('Model Response:', modelResponse);
-
         modelParameters.modelId = modelResponse.model_id;
-        console.log('Model ID:', modelParameters.modelId);
       });
   });
 
   beforeEach(() => {
     cy.visit(FF_URL.WORKFLOWS_NEW);
+  });
+
+  it('create workflow using Sentiment Analysis template', () => {
+    cy.visit(FF_URL.WORKFLOWS_NEW);
+    // cy.wait(120000);
+    cy.contains('h2', 'Sentiment Analysis', { timeout: 10000 }).should(
+      'be.visible'
+    );
+    cy.contains('h2', 'Sentiment Analysis')
+      .parents('.euiCard')
+      .within(() => {
+        cy.contains('button', 'Go').click();
+      });
+    cy.getElementByDataTestId('optionalConfigurationButton')
+      .should('be.visible')
+      .click();
+    cy.getElementByDataTestId('selectDeployedModelButton')
+      .should('be.visible')
+      .click();
+    cy.get('.euiSuperSelect__item').should('be.visible');
+    cy.get('.euiSuperSelect__item').should('have.length', 2);
+    cy.get('.euiSuperSelect__item').contains('OpenAI').click();
+    cy.get('textFieldQuickConfigure').clear().type('textfield');
+
+    // TODO: Add ml model
+    cy.getElementByDataTestId('quickConfigureCreateButton')
+      .should('be.visible')
+      .click();
+    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.getElementByDataTestId('editSourceDataButton')
+      .should('be.visible')
+      .click();
+    cy.getElementByDataTestId('uploadSourceDataButton')
+      .should('be.visible')
+      .click();
+    const filePath =
+      FF_FIXTURE_BASE_PATH + 'sentiment_analysis_source_data.json';
+    cy.get('input[type=file]').selectFile(filePath);
+    cy.getElementByDataTestId('closeSourceDataButton')
+      .should('be.visible')
+      .click();
+    cy.getElementByDataTestId('runIngestionButton')
+      .should('be.visible')
+      .click();
+    cy.get('input#skip').click({ force: true });
+    cy.getElementByDataTestId('searchPipelineButton')
+      .should('be.visible')
+      .click();
   });
 
   // it('should display the search bar', () => {
@@ -105,41 +146,6 @@ describe('Create Workflow', () => {
   //     });
   // });
 
-  it('create workflow using Sentiment Analysis template', () => {
-    cy.contains('h2', 'Sentiment Analysis')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    cy.getElementByDataTestId('optionalConfigurationButton')
-      .should('be.visible')
-      .click();
-    // TODO: Add ml model
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
-    cy.getElementByDataTestId('editSourceDataButton')
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('uploadSourceDataButton')
-      .should('be.visible')
-      .click();
-    const filePath =
-      FF_FIXTURE_BASE_PATH + 'sentiment_analysis_source_data.json';
-    cy.get('input[type=file]').selectFile(filePath);
-    cy.getElementByDataTestId('closeSourceDataButton')
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('runIngestionButton')
-      .should('be.visible')
-      .click();
-    cy.get('input#skip').click({ force: true });
-    cy.getElementByDataTestId('searchPipelineButton')
-      .should('be.visible')
-      .click();
-  });
-
   // it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
   //   cy.contains('h2', 'Retrieval-Augmented Generation (RAG)')
   //     .parents('.euiCard')
@@ -148,11 +154,13 @@ describe('Create Workflow', () => {
   //     });
   // });
   after(() => {
-    cy.undeployMLCommonsModel(modelParameters.modelId).then((Response) => {
-      console.log('Response:', Response);
-    });
-    cy.deleteMLCommonsModel(modelParameters.modelId).then((Response) => {
-      console.log('Response:', Response);
-    });
+    if (modelParameters.modelId != '') {
+      cy.undeployMLCommonsModel(modelParameters.modelId).then((Response) => {
+        console.log('Response:', Response);
+      });
+      cy.deleteMLCommonsModel(modelParameters.modelId).then((Response) => {
+        console.log('Response:', Response);
+      });
+    }
   });
 });
