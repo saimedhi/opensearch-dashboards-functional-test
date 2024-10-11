@@ -114,17 +114,66 @@ describe('Create Workflow', () => {
       .click();
     cy.getElementByDataTestId('queryEditButton').should('be.visible').click();
     // Load JSON from fixture and replace the code editor content
-    cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
-      (jsonData) => {
-        // Click to activate the editor
-        cy.get('[data-test-subj="codeEditorHint"]').first().click();
+    // cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
+    //   (jsonData) => {
+    //     // Click to activate the editor
+    //     cy.get('[data-test-subj="codeEditorHint"]').first().click();
 
-        // Clear the editor and type the new JSON
-        cy.get('.ace_text-input')
-          .clear()
-          .type(JSON.stringify(jsonData), { force: true });
-      }
-    );
+    //     // Clear the editor and type the new JSON
+    //     cy.get('.ace_text-input')
+    //       .clear()
+    //       .type(JSON.stringify(jsonData), { force: true });
+    //   }
+    // );
+    cy.get('[data-testid="editQueryModalBody"]').within(() => {
+      cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
+        (jsonData) => {
+          const jsonString = JSON.stringify(jsonData, null, 2); // Pretty-print JSON for better formatting
+
+          cy.get('.ace_text-input')
+            .focus()
+            .clear({ force: true })
+            .wait(2000)
+            .type(jsonString, {
+              force: true,
+              parseSpecialCharSequences: false,
+              delay: 5, // Optional delay for more natural typing
+            })
+            .trigger('blur', { force: true });
+        }
+      );
+    });
+
+    //   cy.get('[aria-controls="accordionForCreateIndexSettings"]')
+    //   .click()
+    //   .end()
+    //   .get('.ace_text-input')
+    //   .focus()
+    //   .clear({ force: true })
+    //   .type(
+    //     '{ "index.blocks.write": true, "index.number_of_shards": 2, "index.number_of_replicas": 3 }',
+    //     {
+    //       parseSpecialCharSequences: false,
+    //       force: true,
+    //     }
+    //   )
+    //   .blur();
+    // );
+    //  );
+
+    // cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
+    //   (query) => {
+    //     const jsonString = JSON.stringify(query, null, 2);
+    //     cy.get('label')
+    //       .contains('Query')
+    //       .parent()
+    //       .next('div')
+    //       .find('.ace_text-input')
+    //       .click({ force: true })
+    //       .clear()
+    //       .type(jsonString, { parseSpecialCharSequences: false }); //
+    //   }
+    // );
 
     cy.getElementByDataTestId('searchQueryCloseButton')
       .should('be.visible')
