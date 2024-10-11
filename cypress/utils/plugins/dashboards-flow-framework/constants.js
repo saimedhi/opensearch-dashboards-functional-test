@@ -48,11 +48,33 @@ export const APIS_MLC = {
 
 /**
  *****************************
+ NODE API / SERVER CONSTANTS
+ *****************************
+ */
+//http://localhost:5601/api/flow_framework/workflow/update/kPhgeZIBeRw16G30MmN7/false/false
+
+const BASE_FF_NODE_API_PATH = BASE_PATH + '/api/flow_framework';
+
+//  export const FF_NODE_API_PATH = {
+//    UPDATE_WORKFLOW: BASE_FF_NODE_API_PATH + '/detectors/_list*',
+//  };
+
+export function updateWorkflowNodeApiPath(workflowId) {
+  return (
+    BASE_FF_NODE_API_PATH + '/workflow/update/' + workflowId + '/false/false'
+  );
+}
+
+export function provisionWorkflowNodeApiPath(workflowId) {
+  return BASE_FF_NODE_API_PATH + '/workflow/provision/' + workflowId;
+}
+
+/**
+ *****************************
  MISC CONSTANTS
  *****************************
  */
 
-export const FF_FIXTURE_BASE_PATH =
-  'cypress/fixtures/plugins/dashboards-flow-framework/';
+export const FF_FIXTURE_BASE_PATH = 'plugins/dashboards-flow-framework/';
 
 export const TEST_WORKFLOW_ID = '123456789';
