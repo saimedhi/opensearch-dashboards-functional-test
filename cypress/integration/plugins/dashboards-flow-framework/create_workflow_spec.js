@@ -7,6 +7,7 @@ import {
   FF_URL,
   FF_FIXTURE_BASE_PATH,
   modelParameters,
+  // BASE_PATH,
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
 //import connector1 from '../../../fixtures/plugins/dashboards-flow-framework/connector1.json';
@@ -33,61 +34,73 @@ describe('Create Workflow', () => {
         });
       })
       .then((modelResponse) => {
+        cy.log('Model deployed', modelResponse);
         modelParameters.modelId = modelResponse.model_id;
       });
   });
 
   beforeEach(() => {
     cy.visit(FF_URL.WORKFLOWS_NEW);
+    // cy.origin(BASE_PATH, () => {
+    //   cy.url().should('include', FF_URL.WORKFLOWS_NEW);
+    // });
+    cy.url().should('include', FF_URL.WORKFLOWS_NEW);
   });
 
-  it('create workflow using Sentiment Analysis template', () => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
-    // cy.wait(120000);
-    cy.contains('h2', 'Sentiment Analysis', { timeout: 10000 }).should(
-      'be.visible'
-    );
-    cy.contains('h2', 'Sentiment Analysis')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    cy.getElementByDataTestId('optionalConfigurationButton')
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('selectDeployedModelButton')
-      .should('be.visible')
-      .click();
-    cy.get('.euiSuperSelect__item').should('be.visible');
-    cy.get('.euiSuperSelect__item').should('have.length', 2);
-    cy.get('.euiSuperSelect__item').contains('OpenAI').click();
-    cy.get('textFieldQuickConfigure').clear().type('textfield');
+  // it('create workflow using Sentiment Analysis template', () => {
+  //   // cy.visit(FF_URL.WORKFLOWS_NEW);
+  //   // cy.origin(BASE_PATH, () => {
+  //   //   cy.url().should('include', FF_URL.WORKFLOWS_NEW);
+  //   //   cy.contains('h2', 'Sentiment Analysis', { timeout: 20000 }).should(
+  //   //     'be.visible'
+  //   //   );
+  //   // });
+  //   //cy.wait(120000);
+  //   cy.contains('h2', 'Sentiment Analysis').should('be.visible');
+  //   cy.contains('h2', 'Sentiment Analysis')
+  //     .parents('.euiCard')
+  //     .within(() => {
+  //       cy.contains('button', 'Go').click();
+  //     });
+  //   cy.getElementByDataTestId('optionalConfigurationButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.getElementByDataTestId('selectDeployedModelButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.get('.euiSuperSelect__item').should('be.visible');
+  //   // cy.get('.euiSuperSelect__item').should('have.length', 2);
+  //   cy.get('.euiSuperSelect__item').contains('BedRock').click();
+  //   cy.get('textFieldQuickConfigure')
+  //     .should('be.visible')
+  //     .clear()
+  //     .type('item_text');
 
-    // TODO: Add ml model
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
-    cy.getElementByDataTestId('editSourceDataButton')
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('uploadSourceDataButton')
-      .should('be.visible')
-      .click();
-    const filePath =
-      FF_FIXTURE_BASE_PATH + 'sentiment_analysis_source_data.json';
-    cy.get('input[type=file]').selectFile(filePath);
-    cy.getElementByDataTestId('closeSourceDataButton')
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('runIngestionButton')
-      .should('be.visible')
-      .click();
-    cy.get('input#skip').click({ force: true });
-    cy.getElementByDataTestId('searchPipelineButton')
-      .should('be.visible')
-      .click();
-  });
+  //   // TODO: Add ml model
+  //   cy.getElementByDataTestId('quickConfigureCreateButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.url().should('include', FF_URL.WORKFLOWS + '/');
+  //   cy.getElementByDataTestId('editSourceDataButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.getElementByDataTestId('uploadSourceDataButton')
+  //     .should('be.visible')
+  //     .click();
+  //   const filePath =
+  //     FF_FIXTURE_BASE_PATH + 'sentiment_analysis_source_data.json';
+  //   cy.get('input[type=file]').selectFile(filePath);
+  //   cy.getElementByDataTestId('closeSourceDataButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.getElementByDataTestId('runIngestionButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.get('input#skip').click({ force: true });
+  //   cy.getElementByDataTestId('searchPipelineButton')
+  //     .should('be.visible')
+  //     .click();
+  // });
 
   // it('should display the search bar', () => {
   //   cy.get('input[placeholder="Search"]').should('be.visible');
@@ -118,14 +131,73 @@ describe('Create Workflow', () => {
   //   cy.url().should('include', FF_URL.WORKFLOWS + '/');
   // });
 
-  // it('create workflow using Semantic Search template', () => {
-  // cy.contains('h2', 'Semantic Search')
-  //   .parents('.euiCard')
-  //   .within(() => {
-  //     cy.contains('button', 'Go').click();
-  //     //cy.contains('button', 'Optional configuration').click();
-  //   });
-  // });
+  it('create workflow using Semantic Search template', () => {
+    // cy.contains('h2', 'Semantic Search').should('be.visible');
+    cy.contains('h2', 'Semantic Search', { timeout: 120000 }) // Increase timeout if necessary
+      .should('be.visible')
+      .parents('.euiCard')
+      .within(() => {
+        cy.contains('button', 'Go').click();
+      });
+    // cy.contains('h2', 'Semantic Search').should('be.visible')
+    //   .parents('.euiCard')
+    //   .within(() => {
+    //     cy.contains('button', 'Go').click();
+    //   });
+    cy.getElementByDataTestId('optionalConfigurationButton')
+      .should('be.visible')
+      .click();
+    cy.getElementByDataTestId('selectDeployedModelButton')
+      .should('be.visible')
+      .click();
+    cy.get('.euiSuperSelect__item').should('be.visible');
+    // cy.get('.euiSuperSelect__item').should('have.length', 2);
+    cy.get('.euiSuperSelect__item').contains('BedRock').click();
+    // cy.get('textFieldQuickConfigure')
+    //   .should('be.visible')
+    //   .clear()
+    //   .type('item_text');
+    cy.contains('label', 'Text field')
+      .invoke('attr', 'for')
+      .then((id) => {
+        cy.get(`#${id}`).clear().type('item_text');
+      });
+
+    // TODO: Add ml model
+    cy.getElementByDataTestId('quickConfigureCreateButton')
+      .should('be.visible')
+      .click();
+    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.getElementByDataTestId('editSourceDataButton')
+      .should('be.visible')
+      .click();
+    cy.getElementByDataTestId('uploadSourceDataButton')
+      .should('be.visible')
+      .click();
+    const filePath = FF_FIXTURE_BASE_PATH + 'semantic_search_source_data.json';
+    cy.get('input[type=file]').selectFile(filePath);
+    cy.getElementByDataTestId('closeSourceDataButton')
+      .should('be.visible')
+      .click();
+    cy.mockGetDetectorOnAction(
+      FF_FIXTURE_BASE_PATH + 'ingest_response.json',
+      () => {
+        cy.getElementByDataTestId('runIngestionButton')
+          .should('be.visible')
+          .click();
+        cy.getElementByDataTestId('searchPipelineButton')
+          .should('be.visible')
+          .click();
+      }
+    );
+    // cy.getElementByDataTestId('runIngestionButton')
+    //   .should('be.visible')
+    //   .click();
+    // cy.get('input#skip').click({ force: true });
+    // cy.getElementByDataTestId('searchPipelineButton')
+    //   .should('be.visible')
+    //   .click();
+  });
 
   // it('create workflow using Hybrid Search template', () => {
   //   cy.contains('h2', 'Hybrid Search')

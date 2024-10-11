@@ -42,7 +42,6 @@ export const APIS_MLC = {
   CREATE_CONNECTOR_URL: `${ML_COMMONS_APIS_PREFIX}/connectors/_create`,
   REGISTER_MODEL_URL: `${ML_MODELS_BASE_URL}/_register`,
 };
-
 // export function deployModelUrl(modelId) {
 //   return `${ML_COMMONS_APIS_PREFIX}/models/${modelId}/_deploy`;
 // }
