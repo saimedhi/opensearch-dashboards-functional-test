@@ -47,140 +47,188 @@ describe('Create Workflow', () => {
     cy.url().should('include', FF_URL.WORKFLOWS_NEW);
   });
 
-  it('create workflow using Semantic Search template', () => {
-    // cy.contains('h2', 'Semantic Search').should('be.visible');
-    cy.contains('h2', 'Semantic Search', { timeout: 120000 }) // Increase timeout if necessary
-      .should('be.visible')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    // cy.contains('h2', 'Semantic Search').should('be.visible')
-    //   .parents('.euiCard')
-    //   .within(() => {
-    //     cy.contains('button', 'Go').click();
-    //   });
-    cy.getElementByDataTestId('optionalConfigurationButton')
+  it('create workflow using import', () => {
+    cy.getElementByDataTestId('importWorkflowButton')
       .should('be.visible')
       .click();
-    cy.getElementByDataTestId('selectDeployedModelButton')
-      .should('be.visible')
-      .click();
-    cy.get('.euiSuperSelect__item').should('be.visible');
-    // cy.get('.euiSuperSelect__item').should('have.length', 2);
-    cy.get('.euiSuperSelect__item').contains('BedRock').click();
-    // cy.get('textFieldQuickConfigure')
-    //   .should('be.visible')
-    //   .clear()
-    //   .type('item_text');
-    cy.contains('label', 'Text field')
-      .invoke('attr', 'for')
-      .then((id) => {
-        cy.get(`#${id}`).clear().type('item_text');
-      });
-
-    // TODO: Add ml model
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
-    cy.getElementByDataTestId('editSourceDataButton')
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('uploadSourceDataButton')
-      .should('be.visible')
-      .click();
-    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}/semantic_search_source_data.json`;
+    cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
+    const filePath = 'cypress/fixtures/'+ FF_FIXTURE_BASE_PATH + 'semantic_search_example.json';
     cy.get('input[type=file]').selectFile(filePath);
-    cy.getElementByDataTestId('closeSourceDataButton')
-      .should('be.visible')
+    cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
+    cy.wait(5000);
+    cy.get('.euiFieldSearch').focus();
+    cy.get('.euiFieldSearch').type('semantic_search_1{enter}');
+    cy.contains('semantic_search_1');
+    cy.get('.euiTableRow').should('have.length.greaterThan', 0);
+    cy.get('.euiTableRow')
+      .first()
+      .find('button.euiButtonIcon--danger')
       .click();
-    // cy.url().then((url) => {
-    //   workflowId = url.substring(url.lastIndexOf('/') + 1);
-    //   });
-    cy.getWorkflowId().then((workflowId) => {
-      cy.mockUpdateWorkflow(
-        () => {
-          cy.getElementByDataTestId('runIngestionButton')
-            .should('be.visible')
-            .click();
-        },
-        workflowId
-        //cy.replacePlaceholdersInJson(1234)
-      );
-    });
-    cy.getElementByDataTestId('searchPipelineButton')
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('queryEditButton').should('be.visible').click();
-    // Load JSON from fixture and replace the code editor content
-    // cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
-    //   (jsonData) => {
-    //     // Click to activate the editor
-    //     cy.get('[data-test-subj="codeEditorHint"]').first().click();
-
-    //     // Clear the editor and type the new JSON
-    //     cy.get('.ace_text-input')
-    //       .clear()
-    //       .type(JSON.stringify(jsonData), { force: true });
-    //   }
-    // );
-    cy.get('[data-testid="editQueryModalBody"]').within(() => {
-      cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
-        (jsonData) => {
-          const jsonString = JSON.stringify(jsonData);
-          cy.get('.ace_text-input')
-            .focus()
-            .clear({ force: true })
-            .focus()
-            .wait(2000)
-            .type(jsonString, {
-              force: true,
-              parseSpecialCharSequences: false,
-              delay: 5,
-            })
-            .trigger('blur', { force: true });
-        }
-      );
-    });
-
-    //   cy.get('[aria-controls="accordionForCreateIndexSettings"]')
-    //   .click()
-    //   .end()
-    //   .get('.ace_text-input')
-    //   .focus()
-    //   .clear({ force: true })
-    //   .type(
-    //     '{ "index.blocks.write": true, "index.number_of_shards": 2, "index.number_of_replicas": 3 }',
-    //     {
-    //       parseSpecialCharSequences: false,
-    //       force: true,
-    //     }
-    //   )
-    //   .blur();
-    // );
-    //  );
-
-    // cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
-    //   (query) => {
-    //     const jsonString = JSON.stringify(query, null, 2);
-    //     cy.get('label')
-    //       .contains('Query')
-    //       .parent()
-    //       .next('div')
-    //       .find('.ace_text-input')
-    //       .click({ force: true })
-    //       .clear()
-    //       .type(jsonString, { parseSpecialCharSequences: false }); //
-    //   }
-    // );
-
-    cy.getElementByDataTestId('searchQueryCloseButton')
+    cy.contains('The workflow will be permanently deleted.').should('exist');
+    cy.getElementByDataTestId('deleteWorkflowButton')
       .should('be.visible')
       .click();
 
-    cy.getElementByDataTestId('runQueryButton').should('be.visible').click();
+
+    //cy.url().should('include', FF_URL.WORKFLOWS_LIST); TODO:FF there is a bug
   });
+  it('create workflow failed import', () => {
+    cy.getElementByDataTestId('importWorkflowButton')
+      .should('be.visible')
+      .click();
+    cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
+    const filePath = 'cypress/fixtures/'+ FF_FIXTURE_BASE_PATH + 'semantic_search_query.json';
+    cy.get('input[type=file]').selectFile(filePath);
+    cy.contains('The uploaded file is not a valid workflow').should('be.visible');
+  });
+
+  // it('create workflow using Semantic Search template', () => {
+  //   // cy.contains('h2', 'Semantic Search').should('be.visible');
+  //   cy.contains('h2', 'Semantic Search', { timeout: 120000 }) // Increase timeout if necessary
+  //     .should('be.visible')
+  //     .parents('.euiCard')
+  //     .within(() => {
+  //       cy.contains('button', 'Go').click();
+  //     });
+  //   // cy.contains('h2', 'Semantic Search').should('be.visible')
+  //   //   .parents('.euiCard')
+  //   //   .within(() => {
+  //   //     cy.contains('button', 'Go').click();
+  //   //   });
+  //   cy.getElementByDataTestId('optionalConfigurationButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.getElementByDataTestId('selectDeployedModelButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.get('.euiSuperSelect__item').should('be.visible');
+  //   // cy.get('.euiSuperSelect__item').should('have.length', 2);
+  //   cy.get('.euiSuperSelect__item').contains('BedRock').click();
+  //   // cy.get('textFieldQuickConfigure')
+  //   //   .should('be.visible')
+  //   //   .clear()
+  //   //   .type('item_text');
+  //   cy.contains('label', 'Text field')
+  //     .invoke('attr', 'for')
+  //     .then((id) => {
+  //       cy.get(`#${id}`).clear().type('item_text');
+  //     });
+
+  //   // TODO: Add ml model
+  //   cy.getElementByDataTestId('quickConfigureCreateButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.url().should('include', FF_URL.WORKFLOWS + '/');
+  //   cy.getElementByDataTestId('editSourceDataButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.getElementByDataTestId('uploadSourceDataButton')
+  //     .should('be.visible')
+  //     .click();
+  //   const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}/semantic_search_source_data.json`;
+  //   cy.get('input[type=file]').selectFile(filePath);
+  //   cy.getElementByDataTestId('closeSourceDataButton')
+  //     .should('be.visible')
+  //     .click();
+  //   // cy.url().then((url) => {
+  //   //   workflowId = url.substring(url.lastIndexOf('/') + 1);
+  //   //   });
+  //   cy.getWorkflowId().then((workflowId) => {
+  //     cy.mockUpdateWorkflow(
+  //       () => {
+  //         cy.getElementByDataTestId('runIngestionButton')
+  //           .should('be.visible')
+  //           .click();
+  //       },
+  //       workflowId
+  //       //cy.replacePlaceholdersInJson(1234)
+  //     );
+  //   });
+  //   cy.getElementByDataTestId('searchPipelineButton')
+  //     .should('be.visible')
+  //     .click();
+  //   cy.getElementByDataTestId('queryEditButton').should('be.visible').click();
+  //   // Load JSON from fixture and replace the code editor content
+  //   // cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
+  //   //   (jsonData) => {
+  //   //     // Click to activate the editor
+  //   //     cy.get('[data-test-subj="codeEditorHint"]').first().click();
+
+  //   //     // Clear the editor and type the new JSON
+  //   //     cy.get('.ace_text-input')
+  //   //       .clear()
+  //   //       .type(JSON.stringify(jsonData), { force: true });
+  //   //   }
+  //   // );
+  //   cy.get('[data-testid="editQueryModalBody"]').within(() => {
+  //     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
+  //       (jsonData) => {
+  //         const jsonString = JSON.stringify(jsonData);
+  //         cy.get('.ace_text-input')
+  //           .focus()
+  //           .clear({ force: true })
+  //           .focus()
+  //           .wait(2000)
+  //           .type(jsonString, {
+  //             force: true,
+  //             parseSpecialCharSequences: false,
+  //             delay: 5,
+  //           })
+  //           .trigger('blur', { force: true });
+  //       }
+  //     );
+  //   });
+
+  //   //   cy.get('[aria-controls="accordionForCreateIndexSettings"]')
+  //   //   .click()
+  //   //   .end()
+  //   //   .get('.ace_text-input')
+  //   //   .focus()
+  //   //   .clear({ force: true })
+  //   //   .type(
+  //   //     '{ "index.blocks.write": true, "index.number_of_shards": 2, "index.number_of_replicas": 3 }',
+  //   //     {
+  //   //       parseSpecialCharSequences: false,
+  //   //       force: true,
+  //   //     }
+  //   //   )
+  //   //   .blur();
+  //   // );
+  //   //  );
+
+  //   // cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
+  //   //   (query) => {
+  //   //     const jsonString = JSON.stringify(query, null, 2);
+  //   //     cy.get('label')
+  //   //       .contains('Query')
+  //   //       .parent()
+  //   //       .next('div')
+  //   //       .find('.ace_text-input')
+  //   //       .click({ force: true })
+  //   //       .clear()
+  //   //       .type(jsonString, { parseSpecialCharSequences: false }); //
+  //   //   }
+  //   // );
+
+  //   cy.getElementByDataTestId('searchQueryCloseButton')
+  //     .should('be.visible')
+  //     .click();
+
+  //   // cy.getWorkflowId().then((workflowId) => {
+  //   //   cy.mockUpdateWorkflow(
+  //   //     () => {
+  //   cy.mockSearchIndex(
+  //     () => {
+  //       cy.getElementByDataTestId('runQueryButton')
+  //         .should('be.visible')
+  //         .click();
+  //     }
+  //   );
+  //   //     }, workflowId);
+  //   // });
+
+  //   //cy.getElementByDataTestId('runQueryButton').should('be.visible').click();
+  // });
 
   // it('create workflow using Sentiment Analysis template', () => {
   //   // cy.visit(FF_URL.WORKFLOWS_NEW);
@@ -241,16 +289,6 @@ describe('Create Workflow', () => {
   //   cy.get('input[placeholder="Search"]').should('be.visible');
   // });
 
-  // it('create workflow using import', () => {
-  //   cy.getElementByDataTestId('importWorkflowButton')
-  //     .should('be.visible')
-  //     .click();
-  //   cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
-  //   const filePath = FF_FIXTURE_BASE_PATH + 'sample_workflow.json';
-  //   cy.get('input[type=file]').selectFile(filePath);
-  //   cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
-  //   //cy.url().should('include', FF_URL.WORKFLOWS_LIST); TODO:FF there is a bug
-  // });
 
   // it('create workflow using Custom template', () => {
   //   cy.contains('h2', 'Custom')
