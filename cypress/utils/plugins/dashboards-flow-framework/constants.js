@@ -53,7 +53,7 @@ export const APIS_MLC = {
  */
 //http://localhost:5601/api/flow_framework/workflow/update/kPhgeZIBeRw16G30MmN7/false/false
 
-const BASE_FF_NODE_API_PATH = BASE_PATH + '/api/flow_framework';
+export const BASE_FF_NODE_API_PATH = BASE_PATH + '/api/flow_framework';
 
 //  export const FF_NODE_API_PATH = {
 //    UPDATE_WORKFLOW: BASE_FF_NODE_API_PATH + '/detectors/_list*',

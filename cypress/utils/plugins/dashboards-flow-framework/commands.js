@@ -6,6 +6,7 @@
 //import { APIS_MLC, ML_MODELS_BASE_URL } from '../../../utils/constants';
 import {
   //FF_FIXTURE_BASE_PATH,
+  BASE_FF_NODE_API_PATH,
   provisionWorkflowNodeApiPath,
   updateWorkflowNodeApiPath,
 } from '../../../utils/constants';
@@ -180,6 +181,17 @@ Cypress.Commands.add('mockUpdateWorkflow', (funcMockedOn, workflowId) => {
   // Wait for the intercept to finish
   cy.wait('@updateWorkflow');
   cy.wait('@provisionWorkflow');
+});
+
+Cypress.Commands.add('mockSearchIndex', (funcMockedOn) => {
+  cy.intercept('POST', BASE_FF_NODE_API_PATH + 'opensearch/search/**', {
+    statusCode: 200,
+    body: {},
+  }).as('searchRequest');
+
+  funcMockedOn();
+
+  cy.wait('@searchRequest').its('response.statusCode').should('eq', 200);
 });
 
 // Cypress.Commands.add(

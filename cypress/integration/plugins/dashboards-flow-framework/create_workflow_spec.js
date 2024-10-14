@@ -128,16 +128,16 @@ describe('Create Workflow', () => {
     cy.get('[data-testid="editQueryModalBody"]').within(() => {
       cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
         (jsonData) => {
-          const jsonString = JSON.stringify(jsonData, null, 2); // Pretty-print JSON for better formatting
-
+          const jsonString = JSON.stringify(jsonData);
           cy.get('.ace_text-input')
             .focus()
             .clear({ force: true })
+            .focus()
             .wait(2000)
             .type(jsonString, {
               force: true,
               parseSpecialCharSequences: false,
-              delay: 5, // Optional delay for more natural typing
+              delay: 5,
             })
             .trigger('blur', { force: true });
         }
