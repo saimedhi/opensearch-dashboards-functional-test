@@ -1,5 +1,5 @@
 {
-  "name": "semantic_search",
+  "name": "semantic_search_1",
   "use_case": "",
   "description": "A basic workflow containing the ingest pipeline, search pipeline, and index configurations for performing semantic search",
   "version": {
