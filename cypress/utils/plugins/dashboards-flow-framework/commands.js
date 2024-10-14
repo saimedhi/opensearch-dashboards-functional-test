@@ -184,14 +184,30 @@ Cypress.Commands.add('mockUpdateWorkflow', (funcMockedOn, workflowId) => {
 });
 
 Cypress.Commands.add('mockSearchIndex', (funcMockedOn) => {
-  cy.intercept('POST', BASE_FF_NODE_API_PATH + 'opensearch/search/**', {
+  cy.intercept('POST', BASE_FF_NODE_API_PATH + '/opensearch/search/*', {
     statusCode: 200,
-    body: {},
+    body: 
+      [
+        {
+        "item_text": "purpul high heels",
+        "item_price": 150
+        },
+        {
+        "item_text": "pair of jordans",
+        "item_price": 250
+        },
+        {
+        "item_text": "baseball cleats",
+        "item_price": 85
+        },{
+        "item_text": "red pants",
+        "item_price": 95
+        }]
   }).as('searchRequest');
 
   funcMockedOn();
 
-  cy.wait('@searchRequest').its('response.statusCode').should('eq', 200);
+  cy.wait('@searchRequest');
 });
 
 // Cypress.Commands.add(
